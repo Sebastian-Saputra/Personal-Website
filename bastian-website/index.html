@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dwi Sebastian Saputra</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --black: #0a0a0a;
+      --white: #f5f5f0;
+      --accent: #2563eb;
+      --accent2: #0ea5e9;
+      --gray: #6b7280;
+      --light: #e5e7eb;
+      --card: #ffffff;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--white);
+      color: var(--black);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* Custom cursor */
+    .cursor {
+      width: 10px; height: 10px;
+      background: var(--accent);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.1s;
+    }
+    .cursor-ring {
+      width: 36px; height: 36px;
+      border: 2px solid var(--accent);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9998;
+      transition: all 0.15s ease;
+      opacity: 0.5;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1.5rem 6vw;
+      display: flex; justify-content: space-between; align-items: center;
+      background: rgba(245, 245, 240, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      letter-spacing: -0.5px;
+      color: var(--black);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--gray);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: color 0.2s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute; bottom: -3px; left: 0;
+      width: 0; height: 2px;
+      background: var(--accent);
+      transition: width 0.25s ease;
+    }
+    .nav-links a:hover { color: var(--accent); }
+    .nav-links a:hover::after { width: 100%; }
+
+    /* HERO */
+    #hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding: 0 6vw;
+      padding-top: 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 60% at 70% 50%, rgba(37,99,235,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: rgba(37,99,235,0.08);
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.4rem 0.9rem;
+      border-radius: 100px;
+      margin-bottom: 1.5rem;
+    }
+    .hero-tag::before {
+      content: '';
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: blink 1.5s infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+    .hero-name {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.5rem, 5vw, 4.2rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -2px;
+      margin-bottom: 1.2rem;
+    }
+    .hero-name .highlight {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-desc {
+      font-size: 1.05rem;
+      color: var(--gray);
+      line-height: 1.75;
+      max-width: 440px;
+      margin-bottom: 2.5rem;
+    }
+    .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+      padding: 0.8rem 1.8rem;
+      border-radius: 8px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.25s;
+      box-shadow: 0 4px 20px rgba(37,99,235,0.3);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(37,99,235,0.4); }
+    .btn-outline {
+      border: 1.5px solid var(--light);
+      color: var(--black);
+      padding: 0.8rem 1.8rem;
+      border-radius: 8px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.25s;
+    }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+
+    /* Hero visual */
+    .hero-visual {
+      display: flex; justify-content: center; align-items: center;
+    }
+    .avatar-wrapper {
+      position: relative;
+      width: 300px; height: 300px;
+    }
+    .avatar-ring {
+      position: absolute; inset: -16px;
+      border-radius: 50%;
+      border: 2px dashed rgba(37,99,235,0.3);
+      animation: spin 18s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .avatar-circle {
+      width: 100%; height: 100%;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #dbeafe, #e0f2fe);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif;
+      font-size: 5rem;
+      font-weight: 800;
+      color: var(--accent);
+      box-shadow: 0 20px 60px rgba(37,99,235,0.15);
+      position: relative;
+      overflow: hidden;
+    }
+    .avatar-circle::after {
+      content: '';
+      position: absolute;
+      top: -50%; left: -50%;
+      width: 200%; height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(255,255,255,0.4), transparent);
+      animation: shimmer 3s infinite;
+    }
+    @keyframes shimmer { 0%{transform:translateX(-100%) translateY(-100%)} 100%{transform:translateX(100%) translateY(100%)} }
+
+    .badge-float {
+      position: absolute;
+      background: white;
+      border-radius: 10px;
+      padding: 0.6rem 1rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      display: flex; align-items: center; gap: 0.5rem;
+      animation: float 3s ease-in-out infinite;
+    }
+    .badge-float.b1 { bottom: 20px; left: -30px; animation-delay: 0s; }
+    .badge-float.b2 { top: 20px; right: -20px; animation-delay: 1s; }
+    .badge-float.b3 { bottom: 80px; right: -40px; animation-delay: 0.5s; }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+    .badge-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+    /* ABOUT */
+    #about {
+      padding: 7rem 6vw;
+      background: var(--card);
+    }
+    .section-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.8rem;
+    }
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 1.5rem;
+      line-height: 1.1;
+    }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: start;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .about-text p {
+      color: var(--gray);
+      line-height: 1.8;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
+    .info-card {
+      background: var(--white);
+      border-radius: 14px;
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+      border: 1px solid var(--light);
+    }
+    .info-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0.7rem 0;
+      border-bottom: 1px solid var(--light);
+      font-size: 0.9rem;
+    }
+    .info-row:last-child { border-bottom: none; }
+    .info-row span:first-child { color: var(--gray); }
+    .info-row span:last-child { font-weight: 600; }
+
+    .skills-side { }
+    .skill-item {
+      margin-bottom: 1.4rem;
+    }
+    .skill-header {
+      display: flex; justify-content: space-between;
+      font-size: 0.9rem; font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .skill-bar {
+      height: 7px;
+      background: var(--light);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+    .skill-fill {
+      height: 100%;
+      border-radius: 100px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      width: 0%;
+      transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* SKILLS */
+    #skills {
+      padding: 7rem 6vw;
+      background: var(--black);
+      color: var(--white);
+    }
+    #skills .section-label { color: var(--accent2); }
+    #skills .section-title { color: var(--white); }
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      max-width: 1100px;
+      margin: 3rem auto 0;
+    }
+    .skill-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 2rem;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .skill-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(37,99,235,0.08), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .skill-card:hover { border-color: rgba(37,99,235,0.4); transform: translateY(-4px); }
+    .skill-card:hover::before { opacity: 1; }
+    .skill-icon {
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+    .skill-card h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .skill-card p {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.6;
+    }
+    .skill-level {
+      margin-top: 1rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--accent2);
+    }
+
+    /* CONTACT */
+    #contact {
+      padding: 7rem 6vw;
+      background: var(--card);
+    }
+    .contact-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+    .contact-links { margin-top: 2rem; display: flex; flex-direction: column; gap: 1rem; }
+    .contact-link {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 1rem 1.2rem;
+      border: 1.5px solid var(--light);
+      border-radius: 12px;
+      text-decoration: none;
+      color: var(--black);
+      font-weight: 500;
+      font-size: 0.92rem;
+      transition: all 0.25s;
+    }
+    .contact-link:hover { border-color: var(--accent); color: var(--accent); transform: translateX(5px); }
+    .contact-link-icon { font-size: 1.3rem; }
+    .contact-form-side {}
+    .form-group { margin-bottom: 1.2rem; }
+    .form-group label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--gray); margin-bottom: 0.4rem; }
+    .form-group input, .form-group textarea {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      border: 1.5px solid var(--light);
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      background: var(--white);
+      color: var(--black);
+      transition: border-color 0.2s;
+      outline: none;
+    }
+    .form-group input:focus, .form-group textarea:focus { border-color: var(--accent); }
+    .form-group textarea { resize: none; height: 110px; }
+    .form-submit {
+      width: 100%;
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 0.9rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: none;
+      transition: all 0.25s;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .form-submit:hover { background: #1d4ed8; transform: translateY(-2px); }
+
+    /* TOAST */
+    .toast {
+      position: fixed; bottom: 2rem; right: 2rem;
+      background: var(--black); color: white;
+      padding: 0.9rem 1.5rem;
+      border-radius: 10px;
+      font-size: 0.88rem; font-weight: 500;
+      opacity: 0; transform: translateY(10px);
+      transition: all 0.3s;
+      z-index: 999;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    /* FOOTER */
+    footer {
+      background: var(--black);
+      color: rgba(255,255,255,0.35);
+      text-align: center;
+      padding: 2rem 6vw;
+      font-size: 0.82rem;
+    }
+    footer span { color: rgba(255,255,255,0.6); }
+
+    /* MOBILE */
+    @media (max-width: 768px) {
+      .hero-grid, .about-grid, .contact-inner { grid-template-columns: 1fr; gap: 3rem; }
+      .skills-grid { grid-template-columns: 1fr 1fr; }
+      .hero-visual { display: none; }
+      .nav-links { display: none; }
+      .hero-name { font-size: 2.4rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- Toast -->
+<div class="toast" id="toast">✅ Pesan terkirim!</div>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">About me<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">Tentang</a></li>
+    <li><a href="#skills">Keahlian</a></li>
+    <li><a href="#contact">Kontak</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid">
+    <div class="hero-content">
+      <div class="hero-tag">Siswa SMKN 1 Banyumas</div>
+      <h1 class="hero-name">
+        Dwi Sebastian<br><span class="highlight">Saputra</span>
+      </h1>
+      <p class="hero-desc">
+        Pelajar kelas 11 jurusan <strong>Teknik Jaringan Komputer dan Telekomunikasi (TJKT)</strong> yang passionate di bidang networking, coding, dan dunia digital.
+      </p>
+      <div class="hero-btns">
+        <a href="#skills" class="btn-primary">Lihat Keahlian →</a>
+        <a href="#contact" class="btn-outline">Hubungi Saya</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="avatar-wrapper">
+        <div class="avatar-ring"></div>
+        <div class="avatar-circle">DS</div>
+        <div class="badge-float b1">
+          <div class="badge-dot" style="background:#22c55e"></div>
+          <span>TJKT · Kelas 11</span>
+        </div>
+        <div class="badge-float b2">
+          <div class="badge-dot" style="background:#2563eb"></div>
+          <span>🌐 Networking</span>
+        </div>
+        <div class="badge-float b3">
+          <div class="badge-dot" style="background:#f59e0b"></div>
+          <span>🎮 Gamer</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-grid">
+    <div class="about-text">
+      <p class="section-label">Tentang Saya</p>
+      <h2 class="section-title">Siapa Dwi<br>Sebastian?</h2>
+      <p>Halo! Saya Dwi Sebastian Saputra, seorang pelajar yang antusias di bidang teknologi informasi dan komunikasi. Saat ini saya menempuh pendidikan di SMK Negeri 1 Banyumas, jurusan TJKT (Teknik Jaringan Komputer dan Telekomunikasi).</p>
+      <p>Saya tertarik pada dunia jaringan komputer, pemrograman, dan selalu ingin terus belajar hal-hal baru di bidang IT.</p>
+      <div class="info-card">
+        <div class="info-row"><span>Sekolah</span><span>SMK Negeri 1 Banyumas</span></div>
+        <div class="info-row"><span>Jurusan</span><span>TJKT</span></div>
+        <div class="info-row"><span>Kelas</span><span>XI</span></div>
+        <div class="info-row"><span>Kota</span><span>Banyumas, Jawa Tengah</span></div>
+        <div class="info-row"><span>Status</span><span>🟢 Open to Collaboration</span></div>
+      </div>
+    </div>
+    <div class="skills-side">
+      <p class="section-label">Skill Level</p>
+      <h2 class="section-title">Kemampuan<br>Teknis</h2>
+      <div id="skill-bars">
+        <div class="skill-item"><div class="skill-header"><span>Jaringan Komputer</span><span>80%</span></div><div class="skill-bar"><div class="skill-fill" data-val="80"></div></div></div>
+        <div class="skill-item"><div class="skill-header"><span>Programming</span><span>70%</span></div><div class="skill-bar"><div class="skill-fill" data-val="70"></div></div></div>
+        <div class="skill-item"><div class="skill-header"><span>Linux / Server</span><span>65%</span></div><div class="skill-bar"><div class="skill-fill" data-val="65"></div></div></div>
+        <div class="skill-item"><div class="skill-header"><span>Troubleshooting</span><span>75%</span></div><div class="skill-bar"><div class="skill-fill" data-val="75"></div></div></div>
+        <div class="skill-item"><div class="skill-header"><span>HTML & CSS</span><span>70%</span></div><div class="skill-bar"><div class="skill-fill" data-val="70"></div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS CARDS -->
+<section id="skills">
+  <div style="max-width:1100px; margin: 0 auto;">
+    <p class="section-label">Keahlian & Minat</p>
+    <h2 class="section-title">Yang Saya<br>Kuasai</h2>
+    <div class="skills-grid">
+      <div class="skill-card">
+        <span class="skill-icon">🌐</span>
+        <h3>Jaringan Komputer</h3>
+        <p>Konfigurasi router, switch, TCP/IP, topologi jaringan, dan troubleshooting koneksi.</p>
+        <div class="skill-level">⭐ Keahlian Utama</div>
+      </div>
+      <div class="skill-card">
+        <span class="skill-icon">💻</span>
+        <h3>Programming</h3>
+        <p>Dasar-dasar coding menggunakan HTML, CSS, Python, dan logika pemrograman.</p>
+        <div class="skill-level">🔧 Berkembang</div>
+      </div>
+      <div class="skill-card">
+        <span class="skill-icon">🖥️</span>
+        <h3>Linux & Server</h3>
+        <p>Pengoperasian sistem Linux, manajemen file server, dan konfigurasi dasar server.</p>
+        <div class="skill-level">🔧 Berkembang</div>
+      </div>
+      <div class="skill-card">
+        <span class="skill-icon">🔒</span>
+        <h3>Keamanan Jaringan</h3>
+        <p>Dasar-dasar network security, firewall, dan proteksi data dalam jaringan.</p>
+        <div class="skill-level">📚 Dipelajari</div>
+      </div>
+      <div class="skill-card">
+        <span class="skill-icon">🎮</span>
+        <h3>Gaming</h3>
+        <p>Gamer aktif yang memahami infrastruktur dan koneksi jaringan untuk performa optimal.</p>
+        <div class="skill-level">🎯 Hobi</div>
+      </div>
+      <div class="skill-card">
+        <span class="skill-icon">🛠️</span>
+        <h3>Hardware & Instalasi</h3>
+        <p>Perakitan komputer, instalasi kabel jaringan, dan perawatan perangkat keras.</p>
+        <div class="skill-level">⭐ Keahlian Utama</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-inner">
+    <div>
+      <p class="section-label">Kontak</p>
+      <h2 class="section-title">Mari<br>Terhubung!</h2>
+      <p style="color:var(--gray); line-height:1.75; font-size:0.95rem;">Tertarik untuk berkolaborasi, berdiskusi soal teknologi, atau sekadar say hi? Saya selalu terbuka!</p>
+      <div class="contact-links">
+        <a href="mailto:24.tjkt1.15@smkn1bms.sch.id" class="contact-link">
+          <span class="contact-link-icon">📧</span>
+          <div><div style="font-size:0.75rem;color:var(--gray)">Email</div>24.tjkt1.15@smkn1bms.sch.id</div>
+        </a>
+        <a href="#" class="contact-link">
+          <span class="contact-link-icon">📱</span>
+          <div><div style="font-size:0.75rem;color:var(--gray)">WhatsApp</div>+62 877 6477 8100</div>
+        </a>
+        <a href="#" class="contact-link">
+          <span class="contact-link-icon">💼</span>
+          <div><div style="font-size:0.75rem;color:var(--gray)">LinkedIn</div>sebastian saputra</div>
+        </a>
+      </div>
+    </div>
+    <div class="contact-form-side">
+      <div class="form-group">
+        <label>Nama Kamu</label>
+        <input type="text" id="f-name" placeholder="Contoh: Budi Santoso" />
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="f-email" placeholder="email@kamu.com" />
+      </div>
+      <div class="form-group">
+        <label>Pesan</label>
+        <textarea id="f-msg" placeholder="Tulis pesanmu di sini..."></textarea>
+      </div>
+      <button class="form-submit" onclick="sendMsg()">Kirim Pesan →</button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Dibuat dengan ❤️ oleh <span>Dwi Sebastian Saputra</span> · SMK Negeri 1 Banyumas · TJKT Kelas 11</p>
+</footer>
+
+<script>
+  // Cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cursor.style.left = mx - 5 + 'px'; cursor.style.top = my - 5 + 'px'; });
+  function animRing() { rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12; ring.style.left = rx - 18 + 'px'; ring.style.top = ry - 18 + 'px'; requestAnimationFrame(animRing); }
+  animRing();
+
+  // Skill bars animate on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        document.querySelectorAll('.skill-fill').forEach(bar => {
+          bar.style.width = bar.dataset.val + '%';
+        });
+      }
+    });
+  }, { threshold: 0.3 });
+  const skillSection = document.getElementById('skill-bars');
+  if (skillSection) observer.observe(skillSection);
+
+  // Skill cards stagger on scroll
+  const cardObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const cards = document.querySelectorAll('.skill-card');
+        cards.forEach((c, i) => {
+          setTimeout(() => {
+            c.style.opacity = '1';
+            c.style.transform = 'translateY(0)';
+          }, i * 100);
+        });
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.skill-card').forEach(c => { c.style.opacity = '0'; c.style.transform = 'translateY(24px)'; c.style.transition = 'all 0.5s ease'; });
+  const skillsSection = document.getElementById('skills');
+  if (skillsSection) cardObs.observe(skillsSection);
+
+  // About section fade in
+  const aboutObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.about-text, .skills-side').forEach(el => {
+    el.style.opacity = '0'; el.style.transform = 'translateY(30px)'; el.style.transition = 'all 0.7s ease';
+    aboutObs.observe(el);
+  });
+
+  // Hero entrance
+  window.addEventListener('load', () => {
+    const els = document.querySelectorAll('.hero-tag, .hero-name, .hero-desc, .hero-btns, .avatar-wrapper');
+    els.forEach((el, i) => {
+      el.style.opacity = '0'; el.style.transform = 'translateY(20px)';
+      el.style.transition = `all 0.7s ease ${i * 0.12}s`;
+      setTimeout(() => { el.style.opacity = '1'; el.style.transform = 'translateY(0)'; }, 80 + i * 120);
+    });
+  });
+
+  // Form submit
+  function sendMsg() {
+    const name = document.getElementById('f-name').value.trim();
+    const email = document.getElementById('f-email').value.trim();
+    const msg = document.getElementById('f-msg').value.trim();
+    if (!name || !email || !msg) { alert('Mohon isi semua field ya!'); return; }
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    document.getElementById('f-name').value = '';
+    document.getElementById('f-email').value = '';
+    document.getElementById('f-msg').value = '';
+    setTimeout(() => toast.classList.remove('show'), 3000);
+  }
+
+  // Smooth active nav
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  window.addEventListener('scroll', () => {
+    let curr = '';
+    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 120) curr = s.id; });
+    navLinks.forEach(a => { a.style.color = a.getAttribute('href') === '#' + curr ? 'var(--accent)' : ''; });
+  });
+</script>
+</body>
+</html>
